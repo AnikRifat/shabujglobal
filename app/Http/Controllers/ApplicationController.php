@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Application;
+use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class ApplicationController extends Controller
 
     public function create()
     {
-        $application = false;
+        $application = null;
 
         return view('admin.pages.applications.view', compact('application'));
     }
@@ -29,24 +30,32 @@ class ApplicationController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => [
+            'subject' => [
                 'required',
                 'max:255',
-                Rule::unique('applications', 'name')->whereNull('deleted_at'),
+                Rule::unique('applications', 'subject')->whereNull('deleted_at'),
             ],
             'description' => 'nullable',
-            'price' => 'required|numeric',
-            'image' => 'nullable',
+            'files.*' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+
         ]);
 
-        $data['slug'] = Str::slug($data['name']);
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            $data['image'] = $this->storeApplicationImage($image, 'applications');
-        }
         $data['user_id'] = Auth::user()->id;
-        Application::create($data);
+
+        // Create the application and retrieve its id
+        $application = Application::create($data);
+
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $fileData['file'] = $this->storeApplicationFile($file, 'applications');
+                $fileData['application_id'] = $application->id;
+
+                File::create($fileData);
+
+            }
+        }
+        // dd($files);
 
         return redirect()->route('admin.applications.index')->with('success', 'Application created successfully');
     }
@@ -56,28 +65,43 @@ class ApplicationController extends Controller
         return view('admin.pages.applications.view', compact('application'));
     }
 
+
+
     public function update(Request $request, Application $application)
     {
         $data = $request->validate([
-            'name' => [
+            'subject' => [
                 'required',
                 'max:255',
-                Rule::unique('applications', 'name')->ignore($application->id)->whereNull('deleted_at'),
+                Rule::unique('applications', 'subject')->ignore($application->id)->whereNull('deleted_at'),
             ],
             'description' => 'nullable',
-            'price' => 'required|numeric',
-            'image' => 'nullable',
+            'files.*' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+
         ]);
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $data['image'] = $this->storeApplicationImage($image, 'applications');
-            Storage::delete($application->image);
-        }
-        $data['slug'] = Str::slug($data['name']);
+
+        $data['user_id'] = Auth::user()->id;
+
+        // Update the application
         $application->update($data);
+
+        $files = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $files[] = [
+                    'file' => $this->storeApplicationFile($file, 'applications'),
+                    'application_id' => $application->id,
+                ];
+            }
+
+
+            File::where('application_id', $application->id)->delete();
+            File::create($files);
+        }
 
         return redirect()->route('admin.applications.index')->with('success', 'Application updated successfully');
     }
+
 
     public function destroy(Application $application)
     {
@@ -86,12 +110,12 @@ class ApplicationController extends Controller
         return redirect()->route('admin.applications.index')->with('success', 'Application deleted successfully');
     }
 
-    public function storeApplicationImage(UploadedFile $image, $folder = 'applications')
+    public function storeApplicationFile(UploadedFile $file, $folder = 'applications')
     {
-        $fileName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $filePath = $folder . '/' . $fileName;
 
-        Storage::disk('public')->put($filePath, file_get_contents($image));
+        Storage::disk('public')->put($filePath, file_get_contents($file));
 
         return $filePath;
     }

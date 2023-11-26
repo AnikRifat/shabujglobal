@@ -23,30 +23,23 @@ class DataTableController extends Controller
 
     public function applications()
     {
-        $applications = Application::select(['id', 'name', 'description', 'price', 'image']);
+        $applications = Application::select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
 
         return DataTables::of($applications)
-            ->addColumn('image', function ($application) {
-                $imageUrl = asset('storage/app/public/' . $application->image);
-
-                return '<img src="' . $imageUrl . '" alt="Application Image" style="max-width: 100px; max-height: 100px;">';
-            })
             ->addColumn('action', function ($application) {
-                if (auth()->user()->can('permission', ['update application'])) {
-                    $edit = '<a href="' . route('admin.applications.edit', $application->id) . '" class="btn btn-primary">Edit</a>';
-                } else {
-                    $edit = '<a disabled class=" btn btn-secondary">Unable to Edit</a>';
-                }
-                if (auth()->user()->can('permission', ['delete application'])) {
-                    $delete = '<a href="' . route('admin.applications.destroy', $application->id) . '" class="btn btn-danger">Delete</a>';
-                } else {
-                    $delete = '<a disabled class=" btn btn-secondary">Ubanle to Delete</a>';
-                }
+                $edit = auth()->user()->can('permission', ['update application'])
+                    ? '<a href="' . route('admin.applications.edit', $application->id) . '" class="btn btn-primary">Edit</a>'
+                    : '<a disabled class="btn btn-secondary">Unable to Edit</a>';
+
+                $delete = auth()->user()->can('permission', ['delete application'])
+                    ? '<a href="' . route('admin.applications.destroy', $application->id) . '" class="btn btn-danger">Delete</a>'
+                    : '<a disabled class="btn btn-secondary">Unable to Delete</a>';
+
                 $action = $edit . $delete;
 
                 return $action;
             })
-            ->rawColumns(['image', 'action'])
+            ->rawColumns(['action'])
             ->make(true);
     }
 }

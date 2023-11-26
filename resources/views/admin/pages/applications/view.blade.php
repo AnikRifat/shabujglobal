@@ -24,16 +24,16 @@
                     @endif
                     <form
                         action="{{ $application ? route('admin.applications.update', $application->id) : route('admin.applications.store') }}"
-                        method="POST" enctype="multipart/form-data">
+                        method="POST" enctype="multipart/form-data" id="applicationForm">
                         @csrf
                         @if ($application)
                             @method('PUT')
                         @endif
 
                         <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" name="name"
-                                value="{{ $application ? $application->name : old('name') }}" class="form-control">
+                            <label for="subject">Subject:</label>
+                            <input type="text" name="subject"
+                                value="{{ $application ? $application->subject : old('subject') }}" class="form-control">
                         </div>
 
                         <div class="form-group">
@@ -42,15 +42,14 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="price">Price:</label>
-                            <input type="text" name="price"
-                                value="{{ $application ? $application->price : old('price') }}" class="form-control">
-                        </div>
+                            <label for="file">Application file:</label>
+                            <div id="fileInputsContainer" class="row">
+                                <div class="col-md-3">
+                                    <input type="file" name="files[]" class="dropify" multiple>
+                                </div>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="image">Application Image:</label>
-                            <input type="file" name="image" class="dropify"
-                                data-default-file="{{ $application ? asset('path/to/your/default/image.jpg') : '' }}">
+                            <button type="button" class="btn btn-success" id="addFileInput">Add More</button>
                         </div>
 
                         <!-- Add more fields as needed -->
@@ -67,9 +66,18 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"
             integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
         <script>
             $(document).ready(function() {
                 $('.dropify').dropify();
+
+                // Add more file input fields dynamically
+                $('#addFileInput').click(function() {
+                    $('#fileInputsContainer').append(
+                        '<div class="col-md-3"><input type="file" name="files[]" class="dropify" multiple></div>'
+                    );
+                    $('.dropify').dropify();
+                });
             });
         </script>
     @endpush

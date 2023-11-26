@@ -16,10 +16,10 @@
                         <table id="myTable" class="table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Subject</th>
                                     <th>Description</th>
-                                    <th>Price</th>
-                                    <th>Image</th>
+                                    <th>Status</th> <!-- Adjusted to use the correct column name -->
+                                    <th>Created At</th> <!-- Adjusted to use the correct column name -->
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -39,22 +39,22 @@
                     order: [],
                     processing: true,
                     serverSide: true,
-                    ajax: "{{ route('datatable.applications') }}", // Add the route to fetch data dynamically
+                    ajax: "{{ route('datatable.applications') }}",
                     columns: [{
-                            data: 'name',
-                            name: 'name'
+                            data: 'subject',
+                            name: 'subject'
                         },
                         {
                             data: 'description',
                             name: 'description'
                         },
                         {
-                            data: 'price',
-                            name: 'price'
+                            data: 'status',
+                            name: 'status'
                         },
                         {
-                            data: 'image',
-                            name: 'image'
+                            data: 'created_at',
+                            name: 'created_at'
                         },
                         {
                             data: 'action',
