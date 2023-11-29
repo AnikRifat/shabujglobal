@@ -51,5 +51,5 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
-
+\Spatie\Ignition\Ignition::make()->register();
 return $app;

@@ -23,7 +23,7 @@
                         </div>
                     @endif
                     <form
-                        action="{{ $application ? route('admin.applications.update', $application->id) : route('admin.applications.store') }}"
+                        action="{{ $application ? route('admin.application.update', $application->id) : route('admin.application.store') }}"
                         method="POST" enctype="multipart/form-data" id="applicationForm">
                         @csrf
                         @if ($application)
@@ -45,7 +45,8 @@
                             <label for="file">Application file:</label>
                             <div id="fileInputsContainer" class="row">
                                 <div class="col-md-3">
-                                    <input type="file" name="files[]" class="dropify" multiple>
+                                    <input type="file" name="files[]" data-allowed-file-extensions="pdf doc docx"
+                                        accept=".pdf,.doc,.docx" class="dropify" multiple>
                                 </div>
                             </div>
 
@@ -74,7 +75,7 @@
                 // Add more file input fields dynamically
                 $('#addFileInput').click(function() {
                     $('#fileInputsContainer').append(
-                        '<div class="col-md-3"><input type="file" name="files[]" class="dropify" multiple></div>'
+                        '<div class="col-md-3"><input type="file" name="files[]" data-allowed-file-extensions="pdf doc docx"accept = ".pdf,.doc,.docx"lass = "dropify " multiple></div>'
                     );
                     $('.dropify').dropify();
                 });

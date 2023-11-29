@@ -114,14 +114,14 @@
                 <ul class="menu-sub">
                     @can('permission', ['show application'])
                         <li class="menu-item">
-                            <a href="{{ route('admin.applications.index') }}" class="menu-link">
+                            <a href="{{ route('admin.application.index') }}" class="menu-link">
                                 <div data-i18n="Without menu">All Application</div>
                             </a>
                         </li>
                     @endcan
                     @can('permission', ['create application'])
                         <li class="menu-item">
-                            <a href="{{ route('admin.applications.create') }}" class="menu-link">
+                            <a href="{{ route('admin.application.create') }}" class="menu-link">
                                 <div data-i18n="Without menu">Add Application</div>
                             </a>
                         </li>

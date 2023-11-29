@@ -57,7 +57,7 @@ class ApplicationController extends Controller
         }
         // dd($files);
 
-        return redirect()->route('admin.applications.index')->with('success', 'Application created successfully');
+        return redirect()->route('admin.application.index')->with('success', 'Application created successfully');
     }
 
     public function edit(Application $application)
@@ -99,17 +99,38 @@ class ApplicationController extends Controller
             File::create($files);
         }
 
-        return redirect()->route('admin.applications.index')->with('success', 'Application updated successfully');
+        return redirect()->route('admin.application.index')->with('success', 'Application updated successfully');
     }
 
 
+
+    public function test(Application $application)
+    {
+        dd($application);
+
+
+    }
     public function destroy(Application $application)
     {
+        // dd($application);
+
         $application->delete();
 
-        return redirect()->route('admin.applications.index')->with('success', 'Application deleted successfully');
+        return redirect()->route('admin.application.index')->with('success', 'Application deleted successfully');
     }
+    public function Active(Application $application)
+    {
+        $application->status = 1;
+        $application->update();
+        return redirect()->route('admin.application.index')->with('success', 'Application Accepted successfully');
+    }
+    public function cancel(Application $application)
+    {
+        $application->status = 0;
 
+        $application->update();
+        return redirect()->route('admin.application.index')->with('success', 'Application Canceled successfully');
+    }
     public function storeApplicationFile(UploadedFile $file, $folder = 'applications')
     {
         $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();

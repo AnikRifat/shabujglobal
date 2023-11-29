@@ -20,26 +20,41 @@ class DataTableController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
-
     public function applications()
     {
         $applications = Application::select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
 
         return DataTables::of($applications)
-            ->addColumn('action', function ($application) {
-                $edit = auth()->user()->can('permission', ['update application'])
-                    ? '<a href="' . route('admin.applications.edit', $application->id) . '" class="btn btn-primary">Edit</a>'
-                    : '<a disabled class="btn btn-secondary">Unable to Edit</a>';
+            ->addColumn('status', function ($application) {
+                switch ($application->status) {
+                    case 1:
+                        $statusLabel = 'Accepted';
+                        $badgeClass = 'bg-success';
+                        break;
+                    case 2:
+                        $statusLabel = 'Pending';
+                        $badgeClass = 'bg-warning';
+                        break;
+                    case 0:
+                        $statusLabel = 'Canceled';
+                        $badgeClass = 'bg-danger';
+                        break;
+                    default:
+                        $statusLabel = 'Unknown';
+                        $badgeClass = 'bg-secondary';
+                        break;
+                }
 
-                $delete = auth()->user()->can('permission', ['delete application'])
-                    ? '<a href="' . route('admin.applications.destroy', $application->id) . '" class="btn btn-danger">Delete</a>'
-                    : '<a disabled class="btn btn-secondary">Unable to Delete</a>';
-
-                $action = $edit . $delete;
-
-                return $action;
+                return '<span class="badge ' . $badgeClass . '">' . $statusLabel . '</span>';
             })
-            ->rawColumns(['action'])
+            ->addColumn('action', function ($application) {
+                $viewButton = view('admin.pages.applications.action-buttons', compact('application'))->render();
+
+                return $viewButton;
+            })
+            ->rawColumns(['status', 'action'])
             ->make(true);
     }
+
+
 }
