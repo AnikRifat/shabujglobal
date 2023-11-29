@@ -16,11 +16,12 @@ class DataTableController extends Controller
         return DataTables::of($users)
 
             ->addColumn('action', function ($user) {
-                return '<a href="' . route('admin.users.edit', $user->id) . '" class="btn btn-primary">Edit</a>';
+                return '<a href="'.route('admin.users.edit', $user->id).'" class="btn btn-primary">Edit</a>';
             })
             ->rawColumns(['action'])
             ->make(true);
     }
+
     public function applications()
     {
         if (Auth::user()->role == 'student') {
@@ -28,7 +29,6 @@ class DataTableController extends Controller
         } else {
             $applications = Application::select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
         }
-
 
         return DataTables::of($applications)
             ->addColumn('status', function ($application) {
@@ -51,7 +51,7 @@ class DataTableController extends Controller
                         break;
                 }
 
-                return '<span class="badge ' . $badgeClass . '">' . $statusLabel . '</span>';
+                return '<span class="badge '.$badgeClass.'">'.$statusLabel.'</span>';
             })
             ->addColumn('action', function ($application) {
                 $viewButton = view('admin.pages.applications.action-buttons', compact('application'))->render();
@@ -61,6 +61,4 @@ class DataTableController extends Controller
             ->rawColumns(['status', 'action'])
             ->make(true);
     }
-
-
 }

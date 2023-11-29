@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\DataTableController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +36,6 @@ Route::prefix('permissions')->middleware("can:role,'admin'")->group(function () 
     Route::put('update/{permission}', [PermissionController::class, 'update'])->name('admin.permissions.update');
     Route::get('delete/{permission}', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
 });
-
-
 
 Route::prefix('application')->group(function () {
     Route::get('', [ApplicationController::class, 'index'])->name('admin.application.index')->middleware("can:permission,'show application'");

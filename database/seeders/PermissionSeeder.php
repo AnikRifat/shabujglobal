@@ -17,6 +17,5 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'update application']);
         Permission::create(['name' => 'delete application']);
 
-
     }
 }

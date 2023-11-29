@@ -4,9 +4,9 @@
         View
     </button>
     <div class="modal fade" id="application{{ $application->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+              <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">{{ $application->user->name }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -20,15 +20,14 @@
                             <div class="row">
 
                                 @foreach ($application->files as $k => $item)
-                                    <div class="col-md-4 text-center">
+                                    <div class="col-md-6 text-center">
+                                        <h4>file {{ $k + 1 }}</h4>
                                         <iframe
-                                            src='https://view.officeapps.live.com/op/embed.aspx?src={{ asset('storage/app/public/' . $item->file) }}'
-                                            width='1366px' height='623px' frameborder='0'>This is an embedded <a
-                                                target='_blank' href='http://office.com'>Microsoft Office</a> document,
-                                            powered by <a target='_blank' href='http://office.com/webapps'>Office
-                                                Online</a>.</iframe>
+                                            src="https://docs.google.com/gview?url={{ asset('storage/app/public/' . $item->file) }}&embedded=true"
+                                            style="height:500px;width:100%"></iframe>
+                                        <br>
                                         <a href="" class="btn btn-warning btn-sm m-2 " target="_blank">Click
-                                            to view file {{ $k }}</a>
+                                            to view file {{ $k + 1 }}</a>
                                     </div>
                                 @endforeach
 

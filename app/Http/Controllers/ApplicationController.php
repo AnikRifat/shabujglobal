@@ -46,9 +46,7 @@ class ApplicationController extends Controller
 
         $data['user_id'] = Auth::user()->id;
 
-        // Create the application and retrieve its id
         $application = Application::create($data);
-
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
@@ -65,35 +63,37 @@ class ApplicationController extends Controller
         return redirect()->route('admin.application.index')->with('success', 'Application created successfully');
     }
 
-
-
     public function destroy(Application $application)
     {
-        // dd($application);
 
         $application->delete();
 
         return redirect()->route('admin.application.index')->with('success', 'Application deleted successfully');
     }
+
     public function Active(Application $application)
     {
         $application->status = 1;
         $application->update();
         Mail::to(Auth::user()->email)->send(new ApplicationAccept());
+
         return redirect()->route('admin.application.index')->with('success', 'Application Accepted successfully');
     }
+
     public function cancel(Application $application)
     {
         $application->status = 0;
 
         $application->update();
         Mail::to(Auth::user()->email)->send(new ApplicationCancel());
+
         return redirect()->route('admin.application.index')->with('success', 'Application Canceled successfully');
     }
+
     public function storeApplicationFile(UploadedFile $file, $folder = 'applications')
     {
-        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $filePath = $folder . '/' . $fileName;
+        $fileName = Str::uuid().'.'.$file->getClientOriginalExtension();
+        $filePath = $folder.'/'.$fileName;
 
         Storage::disk('public')->put($filePath, file_get_contents($file));
 

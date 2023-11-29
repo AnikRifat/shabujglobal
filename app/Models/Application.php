@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +12,7 @@ class Application extends Model
     {
         return $this->hasMany(File::class, 'application_id');
     }
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');

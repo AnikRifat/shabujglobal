@@ -52,4 +52,5 @@ $app->singleton(
 |
 */
 \Spatie\Ignition\Ignition::make()->register();
+
 return $app;

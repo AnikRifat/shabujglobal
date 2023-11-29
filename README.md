@@ -1,10 +1,10 @@
 ## Demo login info
 
-admin: admin@example.com | password: password
+admin: admin@sge.com | password: password
 
-manager: manager@example.com | password: password
+teacher: teacher@sge.com | password: password
 
-employee: employee@example.com | password: password
+student: student@sge.com | password: password
 
 ## Installation
 
@@ -12,7 +12,7 @@ employee: employee@example.com | password: password
 git clone https://github.com/AnikRifat/curlware.git
 cd blog
 composer install
-cp .env.example .env
+cp .env.sge .env
 php artisan key:generate
 php artisan migrate:fresh --seed
 

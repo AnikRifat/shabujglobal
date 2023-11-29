@@ -1,8 +1,9 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\File;
+use Illuminate\Database\Seeder;
 
 class FilesTableSeeder extends Seeder
 {
