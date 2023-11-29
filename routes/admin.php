@@ -43,11 +43,9 @@ Route::prefix('application')->group(function () {
     Route::get('', [ApplicationController::class, 'index'])->name('admin.application.index')->middleware("can:permission,'show application'");
     Route::get('create', [ApplicationController::class, 'create'])->name('admin.application.create')->middleware("can:permission,'create application'");
     Route::post('store', [ApplicationController::class, 'store'])->name('admin.application.store')->middleware("can:permission,'create application'");
-    Route::get('edit/{application}', [ApplicationController::class, 'edit'])->name('admin.application.edit')->middleware("can:permission,'update application'");
     Route::get('active/{application}', [ApplicationController::class, 'active'])->name('admin.application.active')->middleware("can:permission,'update application'");
     Route::get('cancel/{application}', [ApplicationController::class, 'cancel'])->name('admin.application.cancel')->middleware("can:permission,'update application'");
     Route::get('delete/{application}', [ApplicationController::class, 'destroy'])->name('admin.application.destroy')->middleware("can:permission,'delete application'");
-    // Route::get('test/{test}', [ApplicationController::class, 'test'])->name('admin.application.test')->middleware("can:permission,'delete application'");
 });
 
 Route::prefix('datatable')->group(function () {

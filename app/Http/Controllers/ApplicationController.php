@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicationAccept;
+use App\Mail\ApplicationCancel;
+use App\Mail\ApplicationSubmit;
 use App\Models\Application;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -55,61 +59,14 @@ class ApplicationController extends Controller
 
             }
         }
-        // dd($files);
+
+        Mail::to(Auth::user()->email)->send(new ApplicationSubmit());
 
         return redirect()->route('admin.application.index')->with('success', 'Application created successfully');
     }
 
-    public function edit(Application $application)
-    {
-        return view('admin.pages.applications.view', compact('application'));
-    }
 
 
-
-    public function update(Request $request, Application $application)
-    {
-        $data = $request->validate([
-            'subject' => [
-                'required',
-                'max:255',
-                Rule::unique('applications', 'subject')->ignore($application->id)->whereNull('deleted_at'),
-            ],
-            'description' => 'nullable',
-            'files.*' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-
-        ]);
-
-        $data['user_id'] = Auth::user()->id;
-
-        // Update the application
-        $application->update($data);
-
-        $files = [];
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $files[] = [
-                    'file' => $this->storeApplicationFile($file, 'applications'),
-                    'application_id' => $application->id,
-                ];
-            }
-
-
-            File::where('application_id', $application->id)->delete();
-            File::create($files);
-        }
-
-        return redirect()->route('admin.application.index')->with('success', 'Application updated successfully');
-    }
-
-
-
-    public function test(Application $application)
-    {
-        dd($application);
-
-
-    }
     public function destroy(Application $application)
     {
         // dd($application);
@@ -122,6 +79,7 @@ class ApplicationController extends Controller
     {
         $application->status = 1;
         $application->update();
+        Mail::to(Auth::user()->email)->send(new ApplicationAccept());
         return redirect()->route('admin.application.index')->with('success', 'Application Accepted successfully');
     }
     public function cancel(Application $application)
@@ -129,6 +87,7 @@ class ApplicationController extends Controller
         $application->status = 0;
 
         $application->update();
+        Mail::to(Auth::user()->email)->send(new ApplicationCancel());
         return redirect()->route('admin.application.index')->with('success', 'Application Canceled successfully');
     }
     public function storeApplicationFile(UploadedFile $file, $folder = 'applications')

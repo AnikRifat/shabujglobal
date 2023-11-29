@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class DataTableController extends Controller
@@ -22,7 +23,12 @@ class DataTableController extends Controller
     }
     public function applications()
     {
-        $applications = Application::select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
+        if (Auth::user()->role == 'student') {
+            $applications = Application::where('user_id', Auth::user()->id)->select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
+        } else {
+            $applications = Application::select(['id', 'subject', 'description', 'status', 'user_id', 'created_at']);
+        }
+
 
         return DataTables::of($applications)
             ->addColumn('status', function ($application) {

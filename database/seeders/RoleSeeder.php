@@ -13,8 +13,8 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         Role::create(['name' => 'admin'])->givePermissionTo([1, 2, 3, 4]);
-        Role::create(['name' => 'student'])->givePermissionTo([1, 2, 3]);
-        Role::create(['name' => 'teacher'])->givePermissionTo([2]);
+        Role::create(['name' => 'student'])->givePermissionTo([1, 2]);
+        Role::create(['name' => 'teacher'])->givePermissionTo([2, 3]);
 
     }
 }

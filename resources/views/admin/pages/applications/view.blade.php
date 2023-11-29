@@ -75,7 +75,7 @@
                 // Add more file input fields dynamically
                 $('#addFileInput').click(function() {
                     $('#fileInputsContainer').append(
-                        '<div class="col-md-3"><input type="file" name="files[]" data-allowed-file-extensions="pdf doc docx"accept = ".pdf,.doc,.docx"lass = "dropify " multiple></div>'
+                        '<div class="col-md-3"><input type="file" name="files[]" data-allowed-file-extensions="pdf doc docx" accept = ".pdf,.doc,.docx" class = "dropify " multiple></div>'
                     );
                     $('.dropify').dropify();
                 });
